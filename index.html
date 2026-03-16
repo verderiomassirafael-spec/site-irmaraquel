@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aniversário da Irmã Raquel</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #111;
+      overflow-x: hidden;
+      background: linear-gradient(125deg, #ff4fd8, #ffd34d, #22d3ee, #84cc16, #fb7185, #7c3aed);
+      background-size: 400% 400%;
+      animation: bgShift 12s ease infinite;
+    }
+    body, button, .duck-cursor {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36'><text y='28' font-size='28'>🦆</text></svg>") 8 8, auto;
+    }
+    @keyframes bgShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: .95; }
+    }
+    @keyframes floatWord {
+      0% { transform: translateY(0) scale(.8); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-110px) scale(1.2); opacity: 0; }
+    }
+    @keyframes shakeGlow {
+      0%,100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 18px rgba(255,255,255,.5), 0 0 40px rgba(217,70,239,.5); }
+      25% { transform: scale(1.03) rotate(-2deg); }
+      50% { transform: scale(1.06) rotate(2deg); box-shadow: 0 0 30px rgba(255,255,255,.8), 0 0 70px rgba(34,211,238,.9); }
+      75% { transform: scale(1.03) rotate(-1deg); }
+    }
+    @keyframes floaty {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes flashAnim {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @keyframes popup {
+      0% { transform: scale(.6) rotate(-4deg); opacity: 0; }
+      70% { transform: scale(1.06) rotate(2deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    @keyframes balloonUp {
+      0% { transform: translateY(20px) scale(.8); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-110px) scale(1.05); opacity: 0; }
+    }
+
+    .confetti-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 3;
+    }
+    .confetti {
+      position: absolute;
+      top: -10vh;
+      animation: fall linear infinite;
+      user-select: none;
+    }
+    .flash {
+      position: fixed;
+      inset: 0;
+      background: white;
+      z-index: 50;
+      pointer-events: none;
+      animation: flashAnim .45s ease-out forwards;
+    }
+    .container {
+      position: relative;
+      z-index: 5;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .hero {
+      text-align: center;
+      padding: 70px 0 30px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #fde047;
+      border: 6px solid #fff;
+      padding: 12px 24px;
+      font-weight: 900;
+      font-size: 24px;
+      color: #c026d3;
+      box-shadow: 10px 10px 0 #000;
+      transform: rotate(-2deg);
+    }
+    .hero h1 {
+      font-size: clamp(46px, 9vw, 110px);
+      line-height: .95;
+      color: white;
+      margin: 28px 0 14px;
+      font-weight: 900;
+      text-shadow: 8px 8px 0 #db2777;
+    }
+    .hero p {
+      max-width: 900px;
+      margin: 0 auto;
+      color: white;
+      font-size: clamp(18px, 2.4vw, 24px);
+      font-weight: 700;
+    }
+    .panel {
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(8px);
+      border: 8px solid #fff;
+      border-radius: 34px;
+      box-shadow: 0 20px 80px rgba(0,0,0,.28);
+      padding: 26px;
+      margin-top: 34px;
+    }
+    .panel h2 {
+      margin: 0 0 20px;
+      text-align: center;
+      font-size: clamp(32px, 5vw, 56px);
+      color: #c026d3;
+      font-weight: 900;
+    }
+    .top5-grid, .gallery-grid {
+      display: grid;
+      gap: 22px;
+    }
+    .top5-grid { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+    .gallery-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .top-card, .gallery-card {
+      position: relative;
+      overflow: hidden;
+      border: 8px solid #fff;
+      border-radius: 30px;
+      box-shadow: 12px 12px 0 #000;
+      transition: .25s ease;
+    }
+    .top-card:hover, .gallery-card:hover { transform: rotate(0deg) scale(1.05); }
+    .top-card-inner { padding: 18px; }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 36px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+    .img-wrap {
+      position: relative;
+      overflow: hidden;
+      border: 4px solid #000;
+      border-radius: 18px;
+      background: rgba(255,255,255,.75);
+      aspect-ratio: 1 / 1;
+    }
+    .img-wrap.tall { aspect-ratio: 4 / 5; }
+    .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .45s ease, filter .45s ease;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,.3));
+    }
+    .top-card:hover img,
+    .gallery-card:hover img { transform: scale(1.16) rotate(-2deg); }
+    .grayscale img { filter: grayscale(1) drop-shadow(0 18px 24px rgba(0,0,0,.3)); }
+    .grayscale:hover img { filter: grayscale(0) drop-shadow(0 18px 24px rgba(0,0,0,.3)); transform: scale(1.12); }
+    .hover-label {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      opacity: 0;
+      transition: .25s ease;
+      background: #fff;
+      color: #c026d3;
+      border: 4px solid #67e8f9;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 900;
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+    }
+    .top-card:hover .hover-label,
+    .gallery-card:hover .hover-label { opacity: 1; }
+    .top-card h3, .gallery-title {
+      margin: 14px 0 0;
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .top-card p, .gallery-subtitle {
+      margin: 10px 0 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: rgba(0,0,0,.78);
+      line-height: 1.35;
+    }
+    .gallery-card {
+      background: rgba(255,255,255,.8);
+    }
+    .gallery-card .img-wrap { aspect-ratio: 4 / 5; background: linear-gradient(135deg, #fbcfe8, #fef08a, #a5f3fc); }
+    .gallery-badge {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      background: #fde047;
+      color: #c026d3;
+      border: 4px solid #fff;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 900;
+      box-shadow: 0 10px 18px rgba(0,0,0,.2);
+      z-index: 2;
+    }
+    .gallery-caption {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      background: rgba(255,255,255,.93);
+      border: 4px solid #fff;
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 12px 22px rgba(0,0,0,.22);
+    }
+    .float-word {
+      position: fixed;
+      z-index: 60;
+      color: white;
+      font-size: clamp(26px, 5vw, 52px);
+      font-weight: 900;
+      text-shadow: 4px 4px 0 #db2777;
+      pointer-events: none;
+      animation: floatWord 1.2s forwards;
+    }
+    .voucher-zone {
+      text-align: center;
+      margin-top: 42px;
+    }
+    .explode-btn {
+      border: 8px solid #fff;
+      background: linear-gradient(90deg, #c026d3, #f97316, #06b6d4);
+      color: white;
+      border-radius: 32px;
+      padding: 28px 20px;
+      width: min(100%, 900px);
+      font-size: clamp(28px, 5vw, 60px);
+      font-weight: 900;
+      text-transform: uppercase;
+      box-shadow: 15px 15px 0 #000;
+      animation: shakeGlow 1s infinite;
+    }
+    .voucher-card {
+      margin: 30px auto 0;
+      max-width: 1100px;
+      background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(252,231,243,.96));
+      border: 8px dashed #d946ef;
+      border-radius: 34px;
+      padding: 22px;
+      box-shadow: 18px 18px 0 #db2777;
+      animation: popup .8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    .voucher-card:before {
+      content: "TCHARAM!";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(80px, 12vw, 180px);
+      color: rgba(192,38,211,.12);
+      font-weight: 900;
+      pointer-events: none;
+    }
+    .voucher-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 24px;
+      align-items: center;
+      text-align: left;
+    }
+    .voucher-grid h3 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: #0369a1;
+      font-weight: 900;
+    }
+    .voucher-grid h4 {
+      margin: 18px 0 0;
+      font-size: clamp(44px, 6vw, 84px);
+      line-height: .9;
+      color: #f97316;
+      font-weight: 900;
+    }
+    .voucher-grid p {
+      margin: 18px 0 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .voucher-pill {
+      margin-top: 24px;
+      display: inline-block;
+      background: #c026d3;
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-weight: 900;
+      box-shadow: 0 12px 18px rgba(0,0,0,.18);
+    }
+    .voucher-img-box {
+      border: 8px solid #fff;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 18px 26px rgba(0,0,0,.25);
+      transform: rotate(2deg);
+      background: white;
+      min-height: 320px;
+    }
+    .voucher-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .fallback {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #fef08a, #fbcfe8, #a5f3fc);
+    }
+    .fallback .icon { font-size: 90px; }
+    .fallback .title { margin-top: 10px; font-size: 26px; font-weight: 900; color: #c026d3; }
+    .fallback .text { margin-top: 8px; font-size: 16px; font-weight: 700; color: rgba(0,0,0,.72); }
+    .footer {
+      text-align: center;
+      color: white;
+      padding: 54px 24px 100px;
+      position: relative;
+      z-index: 5;
+    }
+    .footer h3 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 900;
+      text-shadow: 8px 8px 0 rgba(0,0,0,.26);
+    }
+    .footer p {
+      max-width: 820px;
+      margin: 16px auto 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+    .floating-btn {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 70;
+      border: 8px solid #fff;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #c026d3, #06b6d4);
+      color: #fff;
+      padding: 18px 22px;
+      font-size: 22px;
+      font-weight: 900;
+      box-shadow: 0 16px 24px rgba(0,0,0,.24);
+    }
+    .balloon {
+      position: fixed;
+      right: 24px;
+      bottom: 100px;
+      z-index: 75;
+      background: white;
+      border: 8px solid #f9a8d4;
+      border-radius: 28px;
+      color: #c026d3;
+      font-weight: 900;
+      font-size: clamp(22px, 4vw, 34px);
+      padding: 16px 22px;
+      box-shadow: 12px 12px 0 #000;
+      animation: balloonUp 2.2s forwards;
+    }
+    .balloon:after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%);
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 24px solid white;
+    }
+    .sticker {
+      position: fixed;
+      font-size: clamp(28px, 5vw, 48px);
+      animation: floaty 4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .s1 { left: 20px; top: 20px; }
+    .s2 { right: 30px; top: 70px; }
+    .s3 { left: 8%; top: 45%; }
+    .s4 { right: 7%; top: 38%; }
+    .s5 { left: 12%; bottom: 18%; }
+    .s6 { right: 10%; bottom: 16%; }
+
+    @media (max-width: 900px) {
+      .voucher-grid { grid-template-columns: 1fr; text-align: center; }
+      .voucher-img-box { transform: rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti-layer" id="confettiBase"></div>
+  <div class="confetti-layer" id="confettiPresent"></div>
+  <div id="flashRoot"></div>
+  <div id="wordsRoot"></div>
+
+  <div class="sticker s1">🎉</div>
+  <div class="sticker s2">🦆</div>
+  <div class="sticker s3">✨</div>
+  <div class="sticker s4">🎈</div>
+  <div class="sticker s5">💖</div>
+  <div class="sticker s6">🎊</div>
+
+  <div class="container">
+    <header class="hero">
+      <div class="hero-badge">🎂 O SITE MAIS ZUADO DO MUNDO 🎂</div>
+      <h1>RAQUEL DAY 💥</h1>
+      <p>Bem-vindo ao parque de diversões oficial da Irmã Raquel: com fotos reais, pato azul, memória afetiva, caos festivo e um presente final de respeito.</p>
+    </header>
+
+    <section class="panel">
+      <h2>Top 5 coisas que a Irmã Raquel mais ama</h2>
+      <div class="top5-grid">
+        <div class="top-card" style="transform: rotate(-3deg); background: linear-gradient(135deg,#f9a8d4,#fde68a);" onclick="spawnWord(event,'LINDA!')">
+          <div class="top-card-inner">
+            <div class="card-head"><span>📸</span><span>#5</span></div>
+            <div class="img-wrap">
+              <img src="raquel-desprevenida.png" alt="Se esta imagem sumiu, foi porque a câmera teve medo da expressão da Irmã Raquel 🖼️" onerror="imgFallback(this)" />
+              <div class="hover-label">LINDA!</div>
+            </div>
+            <h3>Tirar lindas fotos</h3>
+            <p>Adora quando os superiores pedem uma foto dela.</p>
+          </div>
+        </div>
+
+        <div class="top-card" style="transform: rotate(3deg); background: linear-gradient(135deg,#67e8f9,#93c5fd);" onclick="spawnWord(event,'DIVA!')">
+          <div class="top-card-inner">
+            <div class="card-head"><span>⛪</span><span>#4</span></div>
+            <div class="img-wrap">
+              <img src="raquel-baloes.jpg" alt="A imagem da missa das 15 sumiu porque até os balões quiseram aparecer mais 🖼️" onerror="imgFallback(this)" />
+              <div class="hover-label">DIVA!</div>
+            </div>
+            <h3>Missa das 15hrs</h3>
+            <p>Se tiver compromisso santo, ela está plena.</p>
+          </div>
+        </div>
+
+        <div class="top-card" style="transform: rotate(-1deg); background: linear-gradient(135deg,#bef264,#fde68a);" onclick="spawnWord(event,'RURAL!')">
+          <div class="top-card-inner">
+            <div class="card-head"><span>🐔</span><span>#3</span></div>
+            <div class="img-wrap">
+              <img src="pato-azul.png" alt="O pato azul não abriu porque ainda estava secando a tinta 🖼️" onerror="imgFallback(this)" />
+              <div class="hover-label">RURAL!</div>
+            </div>
+            <h3>Galinha da Angola</h3>
+            <p>Tudo que cisca recebe o carinho dela.</p>
+          </div>
+        </div>
+
+        <div class="top-card grayscale" style="transform: rotate(2deg); background: linear-gradient(135deg,#a1a1aa,#e2e8f0);" onclick="spawnWord(event,'MUSEU!')">
+          <div class="top-card-inner">
+            <div class="card-head"><span>🏛️</span><span>#2</span></div>
+            <div class="img-wrap">
+              <img src="raquel-flamengo.png" alt="Se esta imagem do museu sumiu, o passado ficou sensível demais 🖼️" onerror="imgFallback(this)" />
+              <div class="hover-label">MUSEU!</div>
+            </div>
+            <h3>Museu do Flamengo</h3>
+            <p>Visitando o passado, já que o presente tá difícil.</p>
+          </div>
+        </div>
+
+        <div class="top-card" style="transform: rotate(-2deg); background: linear-gradient(135deg,#7dd3fc,#a5f3fc);" onclick="spawnWord(event,'ICÔNICA!')">
+          <div class="top-card-inner">
+            <div class="card-head"><span>🦆</span><span>#1</span></div>
+            <div class="img-wrap">
+              <img src="pato-azul.png" alt="O pato manchado sumiu porque virou obra rara demais 🖼️" onerror="imgFallback(this)" />
+              <div class="hover-label">ICÔNICA!</div>
+            </div>
+            <h3>O Pato Manchado</h3>
+            <p>Um pato branco... azulado. Arte pura.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 style="color:#0369a1;">Galeria de Arte da Raquel</h2>
+      <p style="text-align:center;font-weight:800;color:rgba(0,0,0,.72);max-width:820px;margin:0 auto 20px;">Passe o mouse, clique, admire, se emocione. Tudo aqui foi pensado para o máximo de interação e o máximo de caos festivo.</p>
+      <div class="gallery-grid">
+        <div class="gallery-card duck-cursor" style="transform: rotate(2deg);" onclick="spawnWord(event,'PERFEITA!')">
+          <div class="gallery-badge">MENGÃO MODE</div>
+          <div class="img-wrap tall">
+            <img src="raquel-flamengo.png" alt="Se a foto da Irmã Raquel com o ursão não carregou, é porque a internet ficou emocionada demais 🖼️" onerror="imgFallback(this)" />
+            <div class="hover-label">PERFEITA!</div>
+            <div class="gallery-caption">
+              <div class="gallery-title" style="color:#c026d3;">Modo Flamenguista Ativado</div>
+              <div class="gallery-subtitle">Ela, o ursão e o manto: uma cena histórica do entretenimento nacional.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-card duck-cursor" style="transform: rotate(-2deg);" onclick="spawnWord(event,'LINDA!')">
+          <div class="gallery-badge">CÂMERA CORAJOSA</div>
+          <div class="img-wrap tall">
+            <img src="raquel-desprevenida.png" alt="A foto desprevenida sumiu porque até o arquivo ficou com medo da expressão dela 🖼️" onerror="imgFallback(this)" />
+            <div class="hover-label">LINDA!</div>
+            <div class="gallery-caption">
+              <div class="gallery-title" style="color:#c026d3;">Rainha das fotos desprevenidas</div>
+              <div class="gallery-subtitle">Uma obra intensa, espontânea e muito educativa para quem gosta de fotografar sem avisar.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-card duck-cursor" style="transform: rotate(1deg);" onclick="spawnWord(event,'ICÔNICA!')">
+          <div class="gallery-badge">PATO PREMIUM</div>
+          <div class="img-wrap tall">
+            <img src="pato-azul.png" alt="O pato azul não abriu porque ele ainda está secando a tinta 🖼️" onerror="imgFallback(this)" />
+            <div class="hover-label">ICÔNICA!</div>
+            <div class="gallery-caption">
+              <div class="gallery-title" style="color:#c026d3;">O pato branco... agora azul</div>
+              <div class="gallery-subtitle">O tipo de imagem que muda a história da arte e também a da ornitologia.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-card duck-cursor" style="transform: rotate(-1deg);" onclick="spawnWord(event,'CHOCADA!')">
+          <div class="gallery-badge">TCHARAM CÓSMICO</div>
+          <div class="img-wrap tall">
+            <img src="raquel-espaco.png" alt="A foto espacial desapareceu porque a nave entrou em hipervelocidade 🖼️" onerror="imgFallback(this)" />
+            <div class="hover-label">CHOCADA!</div>
+            <div class="gallery-caption">
+              <div class="gallery-title" style="color:#c026d3;">Meteoro Airlines</div>
+              <div class="gallery-subtitle">Uma viagem intergaláctica com muito carisma, paixão e zero limites para a zoeira.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-card duck-cursor" style="transform: rotate(2deg);" onclick="spawnWord(event,'LINDA!')">
+          <div class="gallery-badge">ESTRELA MASTER</div>
+          <div class="img-wrap tall">
+            <img src="raquel-baloes.jpg" alt="A foto com balões foi tão bonita que resolveu flutuar pra longe 🖼️" onerror="imgFallback(this)" />
+            <div class="hover-label">LINDA!</div>
+            <div class="gallery-caption">
+              <div class="gallery-title" style="color:#c026d3;">Aniversariante oficial do universo</div>
+              <div class="gallery-subtitle">Com balões, brilho e pose de quem sabe exatamente que nasceu para ser homenageada.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel voucher-zone">
+      <div style="font-size:14px;letter-spacing:.35em;text-transform:uppercase;color:#c026d3;font-weight:900;">A grande explosão do presente</div>
+      <h2 style="margin-top:14px;color:#111;">Vale um calçado 👟</h2>
+      <p style="max-width:760px;margin:0 auto 10px;font-size:20px;font-weight:700;color:rgba(0,0,0,.75);">Chegou a hora do ápice visual deste site: brilho, impacto, exagero e o voucher oficial no final.</p>
+
+      <div id="voucherClosed">
+        <button class="explode-btn duck-cursor" onclick="openVoucher()">💥 CLIQUE AQUI PARA<br>DESBLOQUEAR SEU PRESENTE 💥</button>
+        <div style="margin-top:14px;text-transform:uppercase;letter-spacing:.25em;color:#c026d3;font-weight:900;">nível máximo de impacto visual</div>
+      </div>
+
+      <div id="voucherOpen" style="display:none;">
+        <div class="voucher-card">
+          <div class="voucher-grid">
+            <div>
+              <h3>Voucher especialíssimo</h3>
+              <h4>VALE UM<br>CALÇADO</h4>
+              <p>Você acaba de receber um vale-presente preparado com carinho para que possa escolher, na Souza Calçados, um calçado especial.</p>
+              <div class="voucher-pill">Presente liberado com carinho e zoeira 💌</div>
+            </div>
+            <div class="voucher-img-box" id="voucherBox">
+              <img src="voucher.png" alt="Se o voucher não abriu, até o presente ficou nervoso com tanta expectativa 🖼️" onerror="voucherFallback(this)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <h3>Parabéns, Irmã Raquel! 🎂✨</h3>
+    <p>Que nunca faltem boas risadas, fotos memoráveis, animais queridos, balões brilhando, viagens espaciais impossíveis e patos artisticamente questionáveis.</p>
+  </footer>
+
+  <button class="floating-btn duck-cursor" onclick="showBalloon()">🎈 SURPRESA!</button>
+  <div id="balloonRoot"></div>
+
+  <script>
+    function makeConfetti(targetId, emojis, amount) {
+      const root = document.getElementById(targetId);
+      root.innerHTML = "";
+      for (let i = 0; i < amount; i++) {
+        const span = document.createElement('span');
+        span.className = 'confetti';
+        span.textContent = emojis[i % emojis.length];
+        span.style.left = ((i * 83) % 100) + '%';
+        span.style.animationDelay = ((i * 0.19) % 2.8) + 's';
+        span.style.animationDuration = (4 + (i % 5)) + 's';
+        span.style.fontSize = (1.2 + (i % 5) * 0.45) + 'rem';
+        root.appendChild(span);
+      }
+    }
+
+    function spawnWord(event, text) {
+      const word = document.createElement('div');
+      word.className = 'float-word';
+      word.textContent = text;
+      word.style.left = (event.clientX - 60) + 'px';
+      word.style.top = (event.clientY - 50) + 'px';
+      document.getElementById('wordsRoot').appendChild(word);
+      setTimeout(() => word.remove(), 1200);
+    }
+
+    function imgFallback(img) {
+      const wrap = img.parentElement;
+      wrap.innerHTML = `
+        <div class="fallback">
+          <div class="icon">🖼️</div>
+          <div class="title">A foto sumiu de tanta beleza.</div>
+          <div class="text">${img.alt}</div>
+        </div>
+      `;
+    }
+
+    function voucherFallback(img) {
+      const box = document.getElementById('voucherBox');
+      box.innerHTML = `
+        <div class="fallback">
+          <div class="icon">🖼️</div>
+          <div class="title">O voucher fugiu de tanta emoção.</div>
+          <div class="text">Mas o presente continua valendo!</div>
+        </div>
+      `;
+    }
+
+    function openVoucher() {
+      const flash = document.createElement('div');
+      flash.className = 'flash';
+      document.getElementById('flashRoot').appendChild(flash);
+      setTimeout(() => flash.remove(), 500);
+      document.getElementById('voucherClosed').style.display = 'none';
+      document.getElementById('voucherOpen').style.display = 'block';
+      makeConfetti('confettiPresent', ['👟','👠','💥','💘','🎁'], 52);
+    }
+
+    function showBalloon() {
+      const root = document.getElementById('balloonRoot');
+      root.innerHTML = `<div class="balloon">PARABÉNS, RAQUEL! 🎂🎉</div>`;
+      setTimeout(() => { root.innerHTML = ''; }, 2200);
+    }
+
+    makeConfetti('confettiBase', ['🎉','✨','🦆','💖'], 36);
+  </script>
+</body>
+</html>
